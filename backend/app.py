@@ -36,7 +36,7 @@ if not api_key:
 genai.configure(api_key=api_key)
 
 
-llm_model = genai.GenerativeModel('gemini-1.5-flash')
+llm_model = genai.GenerativeModel('gemini-3-flash-preview')
 
 
 @app.route('/recommend', methods=['POST'])
@@ -46,6 +46,7 @@ def recommend():
 
     chemical = req['chemical']
     crop = req['crop']
+    acres = req['acres']
 
     query = f"{chemical} {crop}".lower()
     query_vec = tfidf.transform([query])
@@ -56,12 +57,25 @@ def recommend():
 
     
     prompt = f"""
-    A farmer is using {chemical} on {crop}.
-    Suggest why switching to {res['organic_alternative']} is better.
-    The target issue is {res['problem_or_pest']}.
-    Explain in 3 simple bullet points.
+    You are an experienced agricultural scientist advising a farmer.
+
+    The farmer is currently using {chemical} on {crop}.
+    The target problem is {res['problem_or_pest']}.
+
+    Give a SHORT answer. 
+    Format strictly like this:
+
+    First, clearly explain WHY switching to {res['organic_alternative']} is better.
+    Give 2 simple bullet points.
+
+    Then, clearly explain HOW to use {res['organic_alternative']} properly for {acres} acres.
+    Give 2 simple bullet points.
     Mention that it should be applied during {res['application_time']}.
-    Keep language simple.
+    Give 2 simple bullet points.
+
+
+    Use very simple language that a rural farmer can easily understand.
+    Be practical and confident.
     """
 
     try:
@@ -73,9 +87,9 @@ def recommend():
     return jsonify({
         "alternative": res['organic_alternative'],
         "dosage": res['dosage'],
-        "llm_advice": llm_text,
         "safety": res['safety_note'],
-        "confidence": round(float(similarity[0][best_idx]), 4)
+        "ADVICE": llm_text,
+        # "confidence": round(float(similarity[0][best_idx]), 4)
     })
 
 
