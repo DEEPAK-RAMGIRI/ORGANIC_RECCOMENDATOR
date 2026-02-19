@@ -87,10 +87,13 @@ def recommend():
     return jsonify({
         "alternative": res['organic_alternative'],
         "dosage": res['dosage'],
-        "safety": res['safety_note'],
-        "ADVICE": llm_text,
+        "application_time": res['application_time'],
+        "safety_note": res['safety_note'],
+        "llm_advice": llm_text
         # "confidence": round(float(similarity[0][best_idx]), 4)
     })
+    
+
 
 
 if __name__ == "__main__":
