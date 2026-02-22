@@ -3,8 +3,7 @@
   import { FlaskConical, Map, CheckCircle } from 'lucide-react';
   import ReactMarkdown from 'react-markdown';
   import '../styles/recommend.css'; 
-
-  // Crop data with direct image links
+  
   const CROP_OPTIONS = [
     { name: "Maize", img: "https://img.icons8.com/color/96/corn.png" },
     { name: "Chilli", img: "https://img.icons8.com/color/96/chili-pepper.png" },
@@ -27,17 +26,16 @@
       }
       setLoading(true);
       try {
-        const response = await axios.post('http://localhost:10000/recommend', inputs);
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/recommend`, inputs);
         setData(response.data);
 
       } catch (err) {
        setData(null); 
         
         if (err.response && err.response.status === 400) {
-            // Show the specific message from Python ("I couldn't find a match...")
             alert(err.response.data.message);
         } else {
-            // Show this ONLY if the Python server is actually off
+
             alert("Error connecting to AI Backend. Ensure your Python server is running.");
         }
       }
