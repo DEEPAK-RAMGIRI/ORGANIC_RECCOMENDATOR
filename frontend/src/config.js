@@ -1,9 +1,7 @@
 // src/config.js
 
 // Vite requires the VITE_ prefix to expose variables to your code
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-export const API_BASE_URL = backendUrl || "URL_NOT_FOUND";
+export const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 export const logEnv = () => {
   if (API_BASE_URL === "URL_NOT_FOUND") {
